@@ -1,5 +1,7 @@
 package com.redsys.gus.data;
 
+import com.redsys.gus.data.remote.model.User;
+
 import java.util.List;
 
 import rx.Observable;
@@ -9,5 +11,5 @@ import rx.Observable;
  */
 public interface UserRepository {
 
-    Observable<List<User>>
+    Observable<List<User>> searchUsers(String searchTerm);
 }

@@ -1,7 +1,37 @@
 package com.redsys.gus.data;
 
+import com.redsys.gus.data.remote.GithubUserRestService;
+import com.redsys.gus.data.remote.model.User;
+
+import java.io.IOException;
+import java.util.List;
+
+import rx.Observable;
+
 /**
  * Created by a on 9/13/16.
  */
 public class UserRepositoryImpl implements UserRepository {
+
+    private GithubUserRestService githubUserRestService;
+
+    public UserRepositoryImpl(GithubUserRestService githubUserRestService) {
+        this.githubUserRestService = githubUserRestService;
+    }
+
+    @Override
+    public Observable<List<User>> searchUsers(final String searchTerm) {
+
+        return Observable.defer(() -> githubUserRestService.searchGithubUsers(searchTerm).concatMap(
+                usersList -> Observable.from(usersList.getItems())
+                        .concatMap(user -> githubUserRestService.getUser(user.getLogin())).toList()))
+
+                .retryWhen(observable -> observable.flatMap(o -> {
+                            if (o instanceof IOException) {
+                                return Observable.just(null);
+                            }
+                            return Observable.error(o);
+                        }))
+                ;
+    }
 }
