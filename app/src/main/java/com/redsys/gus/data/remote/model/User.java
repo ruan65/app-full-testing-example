@@ -252,5 +252,22 @@ public class User {
     public String getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public void setLogin(String login) {
+
+        this.login = login;
+    }
 }
 
