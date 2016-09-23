@@ -1,11 +1,10 @@
 package com.redsys.gus.presentation.search;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,11 +20,10 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class UserSearchActivity extends AppCompatActivity
-        implements UserSearchContract.View {
+public class UserSearchActivity extends AppCompatActivity implements UserSearchContract.View {
 
     private UserSearchContract.Presenter userSearchPresenter;
-    //    private UsersAdapter usersAdapter;
+    private UsersAdapter usersAdapter;
     private SearchView searchView;
     private Toolbar toolbar;
     private ProgressBar progressBar;
@@ -39,8 +37,8 @@ public class UserSearchActivity extends AppCompatActivity
         setContentView(R.layout.activity_user_search);
 
         userSearchPresenter = new UserSearchPresenter(
-                Schedulers.io(),
                 AndroidSchedulers.mainThread(),
+                Schedulers.io(),
                 Injection.provideUserRepo()
         );
 
@@ -52,9 +50,10 @@ public class UserSearchActivity extends AppCompatActivity
         textViewErrorMessage = (TextView) findViewById(R.id.text_view_error_msg);
         recyclerViewUsers = (RecyclerView) findViewById(R.id.recycler_view_users);
 
-
-
         recyclerViewUsers = (RecyclerView) findViewById(R.id.recycler_view_users);
+
+        usersAdapter = new UsersAdapter(this, null);
+        recyclerViewUsers.setAdapter(usersAdapter);
     }
 
     @Override
@@ -66,8 +65,6 @@ public class UserSearchActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
-        Log.d("timber", "onCreateOptionsMenu******************************************");
 
         getMenuInflater().inflate(R.menu.menu_user_search, menu);
         MenuItem searchItem = menu.findItem(R.id.menu_search);
@@ -100,21 +97,31 @@ public class UserSearchActivity extends AppCompatActivity
 
         recyclerViewUsers.setVisibility(View.VISIBLE);
         textViewErrorMessage.setVisibility(View.GONE);
-
+        usersAdapter.setItems(githubUserList);
     }
 
     @Override
     public void showError(String message) {
+
+        textViewErrorMessage.setVisibility(View.VISIBLE);
+        recyclerViewUsers.setVisibility(View.GONE);
+        textViewErrorMessage.setText(message);
 
     }
 
     @Override
     public void showLoading() {
 
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerViewUsers.setVisibility(View.GONE);
+        textViewErrorMessage.setVisibility(View.GONE);
     }
 
     @Override
     public void hideLoading() {
 
+        progressBar.setVisibility(View.GONE);
+        recyclerViewUsers.setVisibility(View.VISIBLE);
+        textViewErrorMessage.setVisibility(View.GONE);
     }
 }
