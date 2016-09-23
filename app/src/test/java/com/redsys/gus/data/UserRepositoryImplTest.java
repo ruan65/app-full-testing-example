@@ -185,7 +185,7 @@ public class UserRepositoryImplTest {
     private User user1FullDetails() {
         User user = new User();
         user.setLogin(USER_LOGIN_RUAN65);
-        user.setName("Rigs Franks");
+        user.setName("Andrey");
         user.setAvatarUrl("avatar_url");
         user.setBio("Bio1");
         return user;
